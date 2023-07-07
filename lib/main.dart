@@ -24,6 +24,7 @@ void main() {
     routes: {
       '/login/': (context) => const LoginView(),
       '/register/': (context) => const RegisterView(),
+      '/notes/': (context) => const NotesView(),
     },
   ));
 }
@@ -75,7 +76,7 @@ class _NotesViewState extends State<NotesView> {
     final navigator = Navigator.of(context);
     return Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(150),
+          preferredSize: const Size.fromHeight(150), 
           child: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: Colors.amberAccent,

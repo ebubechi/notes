@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' as devtools show log;
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -29,6 +30,7 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
+    final NavigatorState navigator = Navigator.of(context);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(150),
@@ -41,7 +43,8 @@ class _LoginViewState extends State<LoginView> {
         children: [
           TextField(
             controller: _email,
-            decoration: const InputDecoration(hintText: 'Enter your email here'),
+            decoration:
+                const InputDecoration(hintText: 'Enter your email here'),
             keyboardType: TextInputType.emailAddress,
             enableSuggestions: false,
             autocorrect: false,
@@ -59,35 +62,34 @@ class _LoginViewState extends State<LoginView> {
               final password = _password!.text;
               try {
                 final userCredential = await FirebaseAuth.instance
-                    .signInWithEmailAndPassword(email: email, password: password);
-                if (kDebugMode) {
-                  print(userCredential);
+                    .signInWithEmailAndPassword(
+                        email: email, password: password);
+                devtools.log(userCredential.toString());
+                if (userCredential.user?.uid != null) {
+                  navigator.pushNamedAndRemoveUntil(
+                      '/notes/', (route) => false);
                 }
               } on FirebaseAuthException catch (e) {
                 // if (kDebugMode) {
-                // print(e.code);
+                // devtools.log(e.code);
                 // }
                 if (e.code == 'user-not-found') {
-                  if (kDebugMode) print('User not found');
+                  devtools.log('User not found');
                 } else {
-                  if (kDebugMode) {
-                    print('SOMETHING ELSE HAPPENED');
-                    print(e.code);
-                  }
+                  devtools.log('SOMETHING ELSE HAPPENED');
+                  devtools.log(e.code);
                 }
               } catch (e) {
-                if (kDebugMode) {
-                  print('something bad happened');
-                  // print(e.runtimeType);
-                  print(e);
-                }
+                devtools.log('something bad happened');
+                // devtools.log(e.runtimeType);
+                devtools.log(e.toString());
               }
             },
           ),
           TextButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pushNamedAndRemoveUntil('/register/', (route) => true);
+                navigator.pushNamedAndRemoveUntil(
+                    '/register/', (route) => true);
               },
               child: const Text('Not registered yet? Register here!'))
         ],
