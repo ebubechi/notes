@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:developer' as devtools show log;
+
+import 'package:notes/constants/routes.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -67,7 +68,7 @@ class _LoginViewState extends State<LoginView> {
                 devtools.log(userCredential.toString());
                 if (userCredential.user?.uid != null) {
                   navigator.pushNamedAndRemoveUntil(
-                      '/notes/', (route) => false);
+                      notesRoutes, (route) => false);
                 }
               } on FirebaseAuthException catch (e) {
                 // if (kDebugMode) {
@@ -89,7 +90,7 @@ class _LoginViewState extends State<LoginView> {
           TextButton(
               onPressed: () {
                 navigator.pushNamedAndRemoveUntil(
-                    '/register/', (route) => true);
+                  registerRoutes, (route) => true);
               },
               child: const Text('Not registered yet? Register here!'))
         ],
