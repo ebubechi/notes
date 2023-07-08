@@ -4,6 +4,8 @@ import 'dart:developer' as devtools show log;
 
 import 'package:notes/constants/routes.dart';
 
+import '../utilities/show_error_dialog.dart';
+
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
 
@@ -75,22 +77,35 @@ class _LoginViewState extends State<LoginView> {
                 // devtools.log(e.code);
                 // }
                 if (e.code == 'user-not-found') {
-                  devtools.log('User not found');
-                } else {
+                  await showErrorDialog(
+                    context,
+                    'User not found',
+                  );
+                } else if (e.code == 'wrong-password') {
                   devtools.log('SOMETHING ELSE HAPPENED');
                   devtools.log(e.code);
+                  await showErrorDialog(
+                    context,
+                    'Wrong password',
+                  );
+                } else {
+                  await showErrorDialog(
+                    context,
+                    'Error: ${e.code}',
+                  );
                 }
               } catch (e) {
-                devtools.log('something bad happened');
-                // devtools.log(e.runtimeType);
-                devtools.log(e.toString());
+                await showErrorDialog(
+                  context,
+                  e.toString(),
+                );
               }
             },
           ),
           TextButton(
               onPressed: () {
                 navigator.pushNamedAndRemoveUntil(
-                  registerRoutes, (route) => true);
+                    registerRoutes, (route) => true);
               },
               child: const Text('Not registered yet? Register here!'))
         ],
