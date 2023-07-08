@@ -42,73 +42,79 @@ class _LoginViewState extends State<LoginView> {
           title: const Text('Login'),
         ),
       ),
-      body: Column(
-        children: [
-          TextField(
-            controller: _email,
-            decoration:
-                const InputDecoration(hintText: 'Enter your email here'),
-            keyboardType: TextInputType.emailAddress,
-            enableSuggestions: false,
-            autocorrect: false,
-          ),
-          TextField(
-            controller: _password,
-            decoration:
-                const InputDecoration(hintText: 'Enter your password here'),
-            obscureText: true,
-          ),
-          TextButton(
-            child: const Text('Login'),
-            onPressed: () async {
-              final email = _email!.text;
-              final password = _password!.text;
-              try {
-                final userCredential = await FirebaseAuth.instance
-                    .signInWithEmailAndPassword(
-                        email: email, password: password);
-                devtools.log(userCredential.toString());
-                if (userCredential.user?.uid != null) {
-                  navigator.pushNamedAndRemoveUntil(
-                      notesRoutes, (route) => false);
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Column(
+          children: [
+            TextField(
+              controller: _email,
+              decoration:
+                  const InputDecoration(hintText: 'Enter your email here'),
+              keyboardType: TextInputType.emailAddress,
+              enableSuggestions: false,
+              autocorrect: false,
+            ),
+            TextField(
+              controller: _password,
+              decoration:
+                  const InputDecoration(hintText: 'Enter your password here'),
+              obscureText: true,
+            ),
+            TextButton(
+              child: const Text('Login'),
+              onPressed: () async {
+                final email = _email!.text;
+                final password = _password!.text;
+                try {
+                  final userCredential = await FirebaseAuth.instance
+                      .signInWithEmailAndPassword(
+                          email: email, password: password);
+                  devtools.log(userCredential.toString());
+                  if (userCredential.user?.uid != null &&
+                      userCredential.user?.emailVerified == true) {
+                    navigator.pushNamedAndRemoveUntil(
+                        notesRoutes, (route) => false);
+                  }
+                } on FirebaseAuthException catch (e) {
+                  // if (kDebugMode) {
+                  // devtools.log(e.code);
+                  // }
+                  if (e.code == 'user-not-found') {
+                    await showErrorDialog(
+                      context,
+                      'User not found',
+                    );
+                  } else if (e.code == 'wrong-password') {
+                    devtools.log('SOMETHING ELSE HAPPENED');
+                    devtools.log(e.code);
+                    await showErrorDialog(
+                      context,
+                      'Wrong password',
+                    );
+                  } else {
+                    // any other Firebase exception that might occur
+                    await showErrorDialog(
+                      context,
+                      'Error: ${e.code}',
+                    );
+                  }
+                } catch (e) {
+                  // any other non Firebase exception that might occur
+                  await showErrorDialog(
+                    context,
+                    e.toString(),
+                  );
                 }
-              } on FirebaseAuthException catch (e) {
-                // if (kDebugMode) {
-                // devtools.log(e.code);
-                // }
-                if (e.code == 'user-not-found') {
-                  await showErrorDialog(
-                    context,
-                    'User not found',
-                  );
-                } else if (e.code == 'wrong-password') {
-                  devtools.log('SOMETHING ELSE HAPPENED');
-                  devtools.log(e.code);
-                  await showErrorDialog(
-                    context,
-                    'Wrong password',
-                  );
-                } else {
-                  await showErrorDialog(
-                    context,
-                    'Error: ${e.code}',
-                  );
-                }
-              } catch (e) {
-                await showErrorDialog(
-                  context,
-                  e.toString(),
-                );
-              }
-            },
-          ),
-          TextButton(
-              onPressed: () {
-                navigator.pushNamedAndRemoveUntil(
-                    registerRoutes, (route) => true);
               },
-              child: const Text('Not registered yet? Register here!'))
-        ],
+            ),
+            TextButton(
+                onPressed: () {
+                  navigator.pushNamedAndRemoveUntil(
+                      registerRoutes, (route) => true);
+                },
+                child: const Text('Not registered yet? Register here!'))
+          ],
+        ),
       ),
     );
   }
