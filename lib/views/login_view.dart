@@ -70,10 +70,12 @@ class _LoginViewState extends State<LoginView> {
                       .signInWithEmailAndPassword(
                           email: email, password: password);
                   devtools.log(userCredential.toString());
-                  if (userCredential.user?.uid != null &&
-                      userCredential.user?.emailVerified == true) {
+                  if (userCredential.user?.emailVerified == true) {
                     navigator.pushNamedAndRemoveUntil(
                         notesRoutes, (route) => false);
+                  } else {
+                    navigator.pushNamedAndRemoveUntil(
+                        verifyEmailRoutes, (route) => false);
                   }
                 } on FirebaseAuthException catch (e) {
                   // if (kDebugMode) {
