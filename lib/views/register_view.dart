@@ -1,8 +1,9 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as devtools show log;
+// import 'dart:developer' as devtools show log;;
 
 import 'package:notes/constants/routes.dart';
+import 'package:notes/services/auth/auth_exceptions.dart';
+import 'package:notes/services/auth/auth_service.dart';
 import 'package:notes/utilities/show_error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
@@ -66,28 +67,18 @@ class _RegisterViewState extends State<RegisterView> {
                 final email = _email!.text;
                 final password = _password!.text;
                 try {
-                  await FirebaseAuth.instance.createUserWithEmailAndPassword(
-                      email: email, password: password);
-                  final user = FirebaseAuth.instance.currentUser;
-                  await user?.sendEmailVerification();
-                  navigator.pushNamed(verifyEmailRoutes);
-                } on FirebaseAuthException catch (e) {
-                  if (e.code == 'weak-password') {
-                    devtools.log('Weak Password');
-                    await showErrorDialog(context, 'Weak Password');
-                  } else if (e.code == 'email-already-in-use') {
-                    devtools.log('Email already in user');
-                    await showErrorDialog(context, 'Email is already exist');
-                  } else if (e.code == 'invalid-email') {
-                    devtools.log('Invalid email');
-                    await showErrorDialog(context, 'This is an invalid email');
-                  } else {
-                    // any other Firebase exception that might occur
-                    await showErrorDialog(context, 'Error: ${e.code}');
-                  }
-                } catch (e) {
-                  // any other non Firebase exception that might occur
-                  await showErrorDialog(context, e.toString());
+                  await AuthService.firebase()
+                      .createUser(email: email, password: password);
+                  await AuthService.firebase().sendEmailVerification();
+                   navigator.pushNamed(verifyEmailRoutes);
+                } on WeakPasswordAuthException {
+                  await showErrorDialog(context, 'Weak Password');
+                } on EmailAlreadyInUseAuthException {
+                  await showErrorDialog(context, 'Email is already exist');
+                } on InvalidEmailAuthException {
+                  await showErrorDialog(context, 'This is an invalid email');
+                } on GenericAuthException {
+                  await showErrorDialog(context, 'Registration Error');
                 }
               },
             ),
