@@ -56,7 +56,7 @@ void main() {
 class NotInitializedException implements Exception {}
 
 class MockAuthProvider implements AuthProvider {
-  AuthUser? _user;
+  AuthUser? _user; // because it's nullable it's by default false
 
   bool _isInitialized = false;
 
