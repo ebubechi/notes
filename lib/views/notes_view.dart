@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:notes/services/auth/auth_service.dart';
+import 'package:notes/services/crud/notes_service.dart';
 
 import '../constants/routes.dart';
 import '../enums/menu_action.dart';
+// import 'dart:developer' as devtools show log;
 
 class NotesView extends StatefulWidget {
   const NotesView({super.key});
@@ -12,12 +14,29 @@ class NotesView extends StatefulWidget {
 }
 
 class _NotesViewState extends State<NotesView> {
+  late final NotesService _notesService;
+  String get UserEmail => AuthService.firebase().currentUser!.email!;
+
+  @override
+  void initState() {
+    _notesService = NotesService();
+    _notesService.open();
+    // devtools.log(_notesService.getUser(email: getUserEmail).toString());
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _notesService.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final navigator = Navigator.of(context);
     return Scaffold(
         appBar: PreferredSize(
-          preferredSize: const Size.fromHeight(150), 
+          preferredSize: const Size.fromHeight(150),
           child: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: Colors.amberAccent,
@@ -48,8 +67,34 @@ class _NotesViewState extends State<NotesView> {
             ],
           ),
         ),
-        body: const Column(
-          children: [Text('Hello world')],
+        body: FutureBuilder(
+          future: _notesService.getOrCreateUser(email: UserEmail),
+          builder:
+              (BuildContext context, AsyncSnapshot<DatabaseUser> snapshot) {
+            switch (snapshot.connectionState) {
+              case (ConnectionState.none):
+                return const Text('Nothing Yet...');
+              case (ConnectionState.waiting):
+                return const CircularProgressIndicator();
+              // case (ConnectionState.active):
+              //   break;
+              case (ConnectionState.done):
+                return StreamBuilder(
+                  stream: _notesService.allNotes,
+                  builder: (BuildContext context,
+                      AsyncSnapshot<List<DatabaseNote>> snapshot) {
+                    switch (snapshot.connectionState) {
+                      case ConnectionState.waiting:
+                        return const Text('wating for all notes...');
+                      default:
+                        return const CircularProgressIndicator();
+                    }
+                  },
+                );
+              default:
+                return const CircularProgressIndicator();
+            }
+          },
         ));
   }
 }
