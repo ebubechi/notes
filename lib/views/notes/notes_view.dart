@@ -17,11 +17,11 @@ class NotesView extends StatefulWidget {
 class _NotesViewState extends State<NotesView> {
   late final NotesService _notesService;
   String get userEmail => AuthService.firebase().currentUser!.email!;
-  late final NavigationService _navigationService;
+  late final NavigatorService _navigatorService;
 
   @override
   void initState() {
-    _navigationService = NavigationService();
+    _navigatorService = NavigatorService();
     _notesService = NotesService();
     _notesService.open();
     // devtools.log(_notesService.getUser(email: getUserEmail).toString());
@@ -47,7 +47,7 @@ class _NotesViewState extends State<NotesView> {
             actions: [
               IconButton(
                   onPressed: () {
-                    _navigationService.navPush(context, newNotesRoutes);
+                    _navigatorService.navPush(context, newNotesRoutes);
                     // Navigator.of(context).pushNamed(newNotesRoutes);
                   },
                   icon: const Icon(Icons.add)),

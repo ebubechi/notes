@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-class NavigationService {
+class NavigatorService {
 
-  static final NavigationService _navservice = 
-      NavigationService._instance();
-  NavigationService._instance();
-  factory NavigationService() => _navservice;
+  static final NavigatorService _navservice = 
+      NavigatorService._instance();
+  NavigatorService._instance();
+  factory NavigatorService() => _navservice;
 
 
   navPush(BuildContext context, String router) {
