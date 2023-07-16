@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:notes/services/auth/auth_service.dart';
 import 'package:notes/services/crud/notes_service.dart';
+import 'package:notes/services/navigation/navigator_service.dart';
 
-import '../constants/routes.dart';
-import '../enums/menu_action.dart';
+import '../../constants/routes.dart';
+import '../../enums/menu_action.dart';
 // import 'dart:developer' as devtools show log;
 
 class NotesView extends StatefulWidget {
@@ -15,10 +16,12 @@ class NotesView extends StatefulWidget {
 
 class _NotesViewState extends State<NotesView> {
   late final NotesService _notesService;
-  String get UserEmail => AuthService.firebase().currentUser!.email!;
+  String get userEmail => AuthService.firebase().currentUser!.email!;
+  late final NavigationService _navigationService;
 
   @override
   void initState() {
+    _navigationService = NavigationService();
     _notesService = NotesService();
     _notesService.open();
     // devtools.log(_notesService.getUser(email: getUserEmail).toString());
@@ -40,8 +43,14 @@ class _NotesViewState extends State<NotesView> {
           child: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: Colors.amberAccent,
-            title: const Text('Main UI'),
+            title: const Text('Your notes'),
             actions: [
+              IconButton(
+                  onPressed: () {
+                    _navigationService.navPush(context, newNotesRoutes);
+                    // Navigator.of(context).pushNamed(newNotesRoutes);
+                  },
+                  icon: const Icon(Icons.add)),
               PopupMenuButton<MenuAction>(
                 itemBuilder: (BuildContext context) {
                   return const [
@@ -68,7 +77,7 @@ class _NotesViewState extends State<NotesView> {
           ),
         ),
         body: FutureBuilder(
-          future: _notesService.getOrCreateUser(email: UserEmail),
+          future: _notesService.getOrCreateUser(email: userEmail),
           builder:
               (BuildContext context, AsyncSnapshot<DatabaseUser> snapshot) {
             switch (snapshot.connectionState) {

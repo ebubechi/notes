@@ -7,7 +7,8 @@ import 'package:notes/views/verify_email_view.dart';
 import 'dart:developer' as devtools show log;
 
 import 'services/auth/auth_user.dart';
-import 'views/notes_view.dart';
+import 'views/notes/new_note_view.dart';
+import 'views/notes/notes_view.dart';
 import 'views/register_view.dart';
 
 void main() {
@@ -27,6 +28,7 @@ void main() {
       registerRoutes: (context) => const RegisterView(),
       notesRoutes: (context) => const NotesView(),
       verifyEmailRoutes: (context) => const VerifyEmailView(),
+      newNotesRoutes:(context) =>  const NewNoteView(),
     },
   ));
 }

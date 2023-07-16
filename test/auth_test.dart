@@ -28,9 +28,10 @@ void main() {
             email: 'uzo@gmail.com', password: 'anypassword');
         expect(badEmailUser,
             throwsA(const TypeMatcher<UserNotFoundAuthException>()));
-        final badPasswordUser = provider.createUser(
-            email: 'email', password: 'ebube');
-        expect(badPasswordUser, throwsA(const TypeMatcher<WrongPasswordAuthException>()));
+        final badPasswordUser =
+            provider.createUser(email: 'email', password: 'ebube');
+        expect(badPasswordUser,
+            throwsA(const TypeMatcher<WrongPasswordAuthException>()));
 
         final user = await provider.createUser(
             email: 'emmanuelsonzico@gmail.com', password: 'ebube007');
@@ -42,14 +43,15 @@ void main() {
       provider.sendEmailVerification();
       final user = provider.currentUser;
       expect(user, isNotNull);
-      expect(user! .isEmailVerified, true);
+      expect(user!.isEmailVerified, true);
     });
     test('Should be able to login and logout again', () async {
       await provider.logOut();
-      await provider.logIn(email: 'emmanuelsonzico@gmail.com', password: 'ebube007');
+      await provider.logIn(
+          email: 'emmanuelsonzico@gmail.com', password: 'ebube007');
       final user = provider.currentUser;
       expect(user, isNotNull);
-     });
+    });
   });
 }
 
@@ -89,7 +91,10 @@ class MockAuthProvider implements AuthProvider {
     if (!isInitialized) throw NotInitializedException();
     if (email == 'uzo@gmail.com') throw UserNotFoundAuthException();
     if (password == 'ebube') throw WrongPasswordAuthException();
-    const user = AuthUser(email: '', isEmailVerified: false);
+    const user = AuthUser(
+      email: '',
+      isEmailVerified: false,
+    );
     _user = user;
     return Future.value(_user);
   }
@@ -107,7 +112,10 @@ class MockAuthProvider implements AuthProvider {
     if (!isInitialized) throw NotInitializedException();
     final user = _user;
     if (user == null) throw UserNotFoundAuthException();
-    const newUser = AuthUser(isEmailVerified: true, email: '');
+    const newUser = AuthUser(
+      isEmailVerified: true,
+      email: '',
+    );
     _user = newUser;
   }
 }
