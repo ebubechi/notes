@@ -12,7 +12,11 @@ class NavigatorService {
     Navigator.of(context).pushNamed(router);
   }
 
-  navPop(BuildContext context, String router) {
-    Navigator.of(context).pop();
+  navPop(BuildContext context, dynamic value) {
+    if(value != null){
+      Navigator.of(context).pop(value);
+    }else {
+      Navigator.of(context).pop();
+    }
   }
 }
