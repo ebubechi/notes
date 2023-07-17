@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:notes/constants/routes.dart';
 import 'package:notes/services/auth/auth_service.dart';
-import 'package:notes/views/login_view.dart';
-import 'package:notes/views/verify_email_view.dart';
 import 'dart:developer' as devtools show log;
 
 import 'services/auth/auth_user.dart';
-import 'views/notes/new_note_view.dart';
+import 'views/auth/login_view.dart';
+import 'views/auth/register_view.dart';
+import 'views/auth/verify_email_view.dart';
+import 'views/notes/create_update_note_view.dart';
 import 'views/notes/notes_view.dart';
-import 'views/register_view.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +28,7 @@ void main() {
       registerRoutes: (context) => const RegisterView(),
       notesRoutes: (context) => const NotesView(),
       verifyEmailRoutes: (context) => const VerifyEmailView(),
-      newNotesRoutes:(context) =>  const NewNoteView(),
+      createOrUpdateNotesRoutes: (context) => const CreateOrUpdateNoteView(),
     },
   ));
 }

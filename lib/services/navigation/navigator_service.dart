@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notes/services/crud/notes_service.dart';
 
 class NavigatorService {
 
@@ -8,8 +9,8 @@ class NavigatorService {
   factory NavigatorService() => _navservice;
 
 
-  navPush(BuildContext context, String router) {
-    Navigator.of(context).pushNamed(router);
+  navPush(BuildContext context, String router, {required DatabaseNote? note}) {
+    Navigator.of(context).pushNamed(router, arguments: note);
   }
 
   navPop(BuildContext context, dynamic value) {
