@@ -5,7 +5,7 @@ import 'package:notes/services/navigation/navigator_service.dart';
 
 import '../../constants/routes.dart';
 import '../../enums/menu_action.dart';
-// import 'dart:developer' as devtools show log;
+import 'dart:developer' as devtools show log;
 
 class NotesView extends StatefulWidget {
   const NotesView({super.key});
@@ -28,11 +28,11 @@ class _NotesViewState extends State<NotesView> {
     super.initState();
   }
 
-  @override
-  void dispose() {
-    _notesService.close();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _notesService.close();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +94,26 @@ class _NotesViewState extends State<NotesView> {
                       AsyncSnapshot<List<DatabaseNote>> snapshot) {
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
-                        return const Text('wating for all notes...');
+                      case ConnectionState.active:
+                        if (snapshot.hasData) {
+                          final allNotes = snapshot.data as List<DatabaseNote>;
+                          devtools.log(allNotes.toString());
+                          return ListView.builder(
+                              itemCount: allNotes.length,
+                              itemBuilder: (context, index) {
+                                final note = allNotes[index];
+                                return ListTile(
+                                  title: Text(
+                                    note.text,
+                                    maxLines: 1,
+                                    softWrap: true,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                );
+                              });
+                        } else {
+                          return const CircularProgressIndicator();
+                        }
                       default:
                         return const CircularProgressIndicator();
                     }
