@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:notes/services/auth/auth_service.dart';
 import 'package:notes/utilities/generics/get_arguments.dart';
-import '../../services/crud/notes_service.dart';
-import '../../services/navigation/navigator_service.dart';
+import '../../services/sql-crud/notes_service.dart';
+// import '../../services/navigation/navigator_service.dart';
 
 class CreateOrUpdateNoteView extends StatefulWidget {
   const CreateOrUpdateNoteView({super.key});
@@ -14,13 +14,13 @@ class CreateOrUpdateNoteView extends StatefulWidget {
 class _CreateOrUpdateNoteViewState extends State<CreateOrUpdateNoteView> {
   DatabaseNote? _note;
   late final NotesService _notesService;
-  late final NavigatorService _navigatorService;
+  // late final NavigatorService _navigatorService;
   late final TextEditingController _textController;
 
   @override
   void initState() {
     _notesService = NotesService();
-    _navigatorService = NavigatorService();
+    // _navigatorService = NavigatorService();
     _textController = TextEditingController();
     super.initState();
   }
@@ -73,7 +73,7 @@ class _CreateOrUpdateNoteViewState extends State<CreateOrUpdateNoteView> {
       return existingNote;
     }
     final currentUser = AuthService.firebase().currentUser!;
-    final email = currentUser.email!;
+    final email = currentUser.email;
     final owner = await _notesService.getUser(email: email);
     final newNote = await _notesService.createNote(owner: owner);
     _note = newNote;

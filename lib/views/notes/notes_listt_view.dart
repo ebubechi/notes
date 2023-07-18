@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notes/services/crud/notes_service.dart';
+import 'package:notes/services/sql-crud/notes_service.dart';
 
 import '../../utilities/dialogs/show_delete_dialog.dart';
 
