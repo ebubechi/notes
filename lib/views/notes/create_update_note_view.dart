@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:notes/services/auth/auth_service.dart';
 import 'package:notes/services/cloud-firestore/cloud_storage_constants.dart';
+import 'package:notes/utilities/dialogs/cannot_share_empty_note_dialog.dart';
 import 'package:notes/utilities/generics/get_arguments.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../services/sql-crud/notes_service.dart';
 // import '../../services/navigation/navigator_service.dart';
 import '../../services/cloud-firestore/cloud_note.dart';
@@ -104,6 +106,21 @@ class _CreateOrUpdateNoteViewState extends State<CreateOrUpdateNoteView> {
           automaticallyImplyLeading: true,
           backgroundColor: Colors.amberAccent,
           title: const Text('Your notes'),
+          actions: [
+            IconButton(
+              onPressed: () async {
+                final text = _textController.text;
+                if (_note == null || text.isEmpty) {
+                  await showCannotShareEmptyNoteDialog(context);
+                } else {
+                  Share.share(text); 
+                }
+              },
+              icon: const Icon(
+                Icons.share,
+              ),
+            ),
+          ],
         ),
       ),
       body: FutureBuilder(
