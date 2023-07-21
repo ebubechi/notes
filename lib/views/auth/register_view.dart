@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'dart:developer' as devtools show log;;
 
 import 'package:notes/constants/routes.dart';
 import 'package:notes/services/auth/auth_exceptions.dart';
 import 'package:notes/services/auth/auth_service.dart';
+import 'package:notes/services/auth/bloc/auth_bloc.dart';
 import 'package:notes/utilities/dialogs/show_error_dialog.dart';
 
 class RegisterView extends StatefulWidget {
@@ -67,10 +69,11 @@ class _RegisterViewState extends State<RegisterView> {
                 final email = _email!.text;
                 final password = _password!.text;
                 try {
+                  // context.read<AuthBloc>().add( AuthEventR );
                   await AuthService.firebase()
                       .createUser(email: email, password: password);
                   await AuthService.firebase().sendEmailVerification();
-                   navigator.pushNamed(verifyEmailRoutes);
+                  navigator.pushNamed(verifyEmailRoutes);
                 } on WeakPasswordAuthException {
                   await showErrorDialog(context, 'Weak Password');
                 } on EmailAlreadyInUseAuthException {

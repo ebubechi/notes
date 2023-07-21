@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:notes/services/auth/auth_service.dart';
+import 'package:notes/services/auth/bloc/auth_bloc.dart';
+import 'package:notes/services/auth/bloc/auth_event.dart';
 import 'package:notes/services/cloud-firestore/firebase_cloud_storage.dart';
 // import 'package:notes/services/sql-crud/notes_service.dart';
 import 'package:notes/services/navigation/navigator_service.dart';
@@ -66,14 +69,16 @@ class _NotesViewState extends State<NotesView> {
                   ];
                 },
                 onSelected: (value) async {
+                  var contextRead = context.read<AuthBloc>();
                   switch (value) {
                     case MenuAction.logout:
                       final shouldLogout = await showLogOutDialog(context);
                       // devtools.log(shouldLogout.toString());
                       if (shouldLogout) {
-                        await AuthService.firebase().logOut();
-                        navigator.pushNamedAndRemoveUntil(
-                            loginRoutes, (_) => false);
+                        contextRead.add(const AuthEventLogOut());
+                        // await AuthService.firebase().logOut();
+                        // navigator.pushNamedAndRemoveUntil(
+                        //     loginRoutes, (_) => false);
                       }
                   }
                 },
