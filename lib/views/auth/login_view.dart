@@ -7,7 +7,7 @@ import 'package:notes/services/auth/auth_exceptions.dart';
 // import 'package:notes/services/auth/auth_service.dart';
 import 'package:notes/services/auth/bloc/auth_bloc.dart';
 import 'package:notes/services/auth/bloc/auth_event.dart';
-import 'package:notes/utilities/dialogs/loading_dialog.dart';
+// import 'package:notes/utilities/dialogs/loading_dialog.dart';
 
 import '../../services/auth/bloc/auth_state.dart';
 import '../../utilities/dialogs/show_error_dialog.dart';
@@ -22,7 +22,6 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   late TextEditingController? _email;
   late TextEditingController? _password;
-  ClosedDialog? _closedDialogHandle;
 
   @override
   void initState() {
@@ -44,23 +43,11 @@ class _LoginViewState extends State<LoginView> {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) async {
         if (state is AuthStateLoggedOut) {
-          final closedDialog = _closedDialogHandle;
-
-          if (!state.isLoading && closedDialog != null) {
-            closedDialog();
-            _closedDialogHandle = null;
-          } else if (state.isLoading && closedDialog == null) {
-            _closedDialogHandle = showLoadingDialog(
-              context: context,
-              text: 'Loading...',
-            );
-          }
-
           if (state.exception is UserNotFoundAuthException) {
             await showErrorDialog(context, 'User not found');
           } else if (state.exception is WrongPasswordAuthException) {
             await showErrorDialog(context, 'Wrong credentials');
-          } else if(state.exception is GenericAuthException){
+          } else if (state.exception is GenericAuthException) {
             await showErrorDialog(context, 'Authentication Error');
           }
         }
@@ -96,6 +83,10 @@ class _LoginViewState extends State<LoginView> {
                 onPressed: () async {
                   final email = _email!.text;
                   final password = _password!.text;
+                  context.read<AuthBloc>().add(AuthEventLogIn(
+                        email,
+                        password,
+                      ));
                   // try {
                   //   context
                   //       .read<AuthBloc>()
@@ -108,12 +99,6 @@ class _LoginViewState extends State<LoginView> {
                   // } on GenericAuthException {
                   //   await showErrorDialog(context, 'Authentication error');
                   // }
-                  context.read<AuthBloc>().add(
-                        AuthEventLogIn(
-                          email,
-                          password,
-                        ),
-                      );
                 },
               ),
               TextButton(

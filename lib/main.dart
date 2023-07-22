@@ -12,6 +12,7 @@ import 'package:notes/views/auth/register_view.dart';
 // import 'dart:developer' as devtools show log;
 
 // import 'services/auth/auth_user.dart';
+import 'helpers/loading/loading_screen.dart';
 import 'views/auth/login_view.dart';
 // import 'views/auth/register_view.dart';
 import 'views/auth/verify_email_view.dart';
@@ -48,8 +49,18 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<AuthBloc>().add(const AuthEventInitialise());
-    return BlocBuilder<AuthBloc, AuthState>(
+    context.read<AuthBloc>().add(const AuthEventInitialize());
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state.isLoading) {
+          LoadingScreen().show(
+            context: context,
+            text: state.loadingText ?? 'Please wait a moment',
+          );
+        } else {
+          LoadingScreen().hide();
+        }
+      },
       builder: (context, state) {
         if (state is AuthStateLoggedIn) {
           return const NotesView();
