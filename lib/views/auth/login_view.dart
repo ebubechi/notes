@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 // import 'dart:developer' as devtools show log;
 
-import 'package:notes/constants/routes.dart';
+// import 'package:notes/constants/routes.dart';
 import 'package:notes/services/auth/auth_exceptions.dart';
 // import 'package:notes/services/auth/auth_service.dart';
 import 'package:notes/services/auth/bloc/auth_bloc.dart';
 import 'package:notes/services/auth/bloc/auth_event.dart';
+import 'package:notes/utilities/dialogs/loading_dialog.dart';
 
 import '../../services/auth/bloc/auth_state.dart';
 import '../../utilities/dialogs/show_error_dialog.dart';
@@ -21,6 +22,7 @@ class LoginView extends StatefulWidget {
 class _LoginViewState extends State<LoginView> {
   late TextEditingController? _email;
   late TextEditingController? _password;
+  ClosedDialog? _closedDialogHandle;
 
   @override
   void initState() {
@@ -38,46 +40,58 @@ class _LoginViewState extends State<LoginView> {
 
   @override
   Widget build(BuildContext context) {
-    final NavigatorState navigator = Navigator.of(context);
-    return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(150),
-        child: AppBar(
-          backgroundColor: Colors.amberAccent,
-          title: const Text('Login'),
+    // final NavigatorState navigator = Navigator.of(context);
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) async {
+        if (state is AuthStateLoggedOut) {
+          final closedDialog = _closedDialogHandle;
+
+          if (!state.isLoading && closedDialog != null) {
+            closedDialog();
+            _closedDialogHandle = null;
+          } else if (state.isLoading && closedDialog == null) {
+            _closedDialogHandle = showLoadingDialog(
+              context: context,
+              text: 'Loading...',
+            );
+          }
+
+          if (state.exception is UserNotFoundAuthException) {
+            await showErrorDialog(context, 'User not found');
+          } else if (state.exception is WrongPasswordAuthException) {
+            await showErrorDialog(context, 'Wrong credentials');
+          } else if(state.exception is GenericAuthException){
+            await showErrorDialog(context, 'Authentication Error');
+          }
+        }
+      },
+      child: Scaffold(
+        appBar: PreferredSize(
+          preferredSize: const Size.fromHeight(150),
+          child: AppBar(
+            backgroundColor: Colors.amberAccent,
+            title: const Text('Login'),
+          ),
         ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          children: [
-            TextField(
-              controller: _email,
-              decoration:
-                  const InputDecoration(hintText: 'Enter your email here'),
-              keyboardType: TextInputType.emailAddress,
-              enableSuggestions: false,
-              autocorrect: false,
-            ),
-            TextField(
-              controller: _password,
-              decoration:
-                  const InputDecoration(hintText: 'Enter your password here'),
-              obscureText: true,
-            ),
-            BlocListener<AuthBloc, AuthState>(
-              listener: (context, state) async {
-                if (state is AuthStateLoggedOut) {
-                  if (state.exception is UserNotFoundAuthException) {
-                    await showErrorDialog(context, 'User not found');
-                  } else if (state.exception is WrongPasswordAuthException) {
-                    await showErrorDialog(context, 'Wrong credentials');
-                  } else {
-                    await showErrorDialog(context, 'Authentication Error');
-                  }
-                }
-              },
-              child: TextButton(
+        body: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: [
+              TextField(
+                controller: _email,
+                decoration:
+                    const InputDecoration(hintText: 'Enter your email here'),
+                keyboardType: TextInputType.emailAddress,
+                enableSuggestions: false,
+                autocorrect: false,
+              ),
+              TextField(
+                controller: _password,
+                decoration:
+                    const InputDecoration(hintText: 'Enter your password here'),
+                obscureText: true,
+              ),
+              TextButton(
                 child: const Text('Login'),
                 onPressed: () async {
                   final email = _email!.text;
@@ -102,14 +116,17 @@ class _LoginViewState extends State<LoginView> {
                       );
                 },
               ),
-            ),
-            TextButton(
-                onPressed: () {
-                  navigator.pushNamedAndRemoveUntil(
-                      registerRoutes, (route) => true);
-                },
-                child: const Text('Not registered yet? Register here!'))
-          ],
+              TextButton(
+                  onPressed: () {
+                    context.read<AuthBloc>().add(
+                          const AuthEventShouldRegister(),
+                        );
+                    // navigator.pushNamedAndRemoveUntil(
+                    //     registerRoutes, (route) => true);
+                  },
+                  child: const Text('Not registered yet? Register here!'))
+            ],
+          ),
         ),
       ),
     );

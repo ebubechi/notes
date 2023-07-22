@@ -8,11 +8,12 @@ import 'package:notes/services/auth/bloc/auth_bloc.dart';
 import 'package:notes/services/auth/bloc/auth_event.dart';
 import 'package:notes/services/auth/bloc/auth_state.dart';
 import 'package:notes/services/auth/firebase_auth_provider.dart';
+import 'package:notes/views/auth/register_view.dart';
 // import 'dart:developer' as devtools show log;
 
 // import 'services/auth/auth_user.dart';
 import 'views/auth/login_view.dart';
-import 'views/auth/register_view.dart';
+// import 'views/auth/register_view.dart';
 import 'views/auth/verify_email_view.dart';
 import 'views/notes/create_update_note_view.dart';
 import 'views/notes/notes_view.dart';
@@ -33,10 +34,10 @@ void main() {
       child: const HomePage(),
     ),
     routes: {
-      loginRoutes: (context) => const LoginView(),
-      registerRoutes: (context) => const RegisterView(),
-      notesRoutes: (context) => const NotesView(),
-      verifyEmailRoutes: (context) => const VerifyEmailView(),
+      // loginRoutes: (context) => const LoginView(),
+      // registerRoutes: (context) => const RegisterView(),
+      // notesRoutes: (context) => const NotesView(),
+      // verifyEmailRoutes: (context) => const VerifyEmailView(),
       createOrUpdateNotesRoutes: (context) => const CreateOrUpdateNoteView(),
     },
   ));
@@ -56,6 +57,8 @@ class HomePage extends StatelessWidget {
           return const VerifyEmailView();
         } else if (state is AuthStateLoggedOut) {
           return const LoginView();
+        } else if (state is AuthStateRegistering) {
+          return const RegisterView();
         } else {
           return const Scaffold(
               body: Center(
