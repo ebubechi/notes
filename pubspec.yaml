@@ -24,11 +24,18 @@ dependencies:
   share_plus: ^7.0.2
   sqflite: ^2.2.8+4
 
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
   test: ^1.24.1
+  flutter_native_splash: ^2.3.1
+  
+flutter_native_splash:
+  background_image: assets/splash.png
+  image: assets/splash.png
 
 flutter:
   uses-material-design: true

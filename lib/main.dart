@@ -7,7 +7,7 @@ import 'package:notes/constants/routes.dart';
 import 'package:notes/services/auth/bloc/auth_bloc.dart';
 import 'package:notes/services/auth/bloc/auth_event.dart';
 import 'package:notes/services/auth/bloc/auth_state.dart';
-import 'package:notes/services/auth/firebase_auth_provider.dart';
+import 'package:notes/services/auth/firebase_auth_provider.dart'; 
 import 'package:notes/views/auth/register_view.dart';
 import 'package:notes/views/auth/forgot_password_view.dart';
 // import 'dart:developer' as devtools show log;
