@@ -26,29 +26,31 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
-        child: Column(children: [
-          const Text(
-              'We\'ve sent you an email verification. Please open it to verify your account. '),
-          const Text(
-              'If you haven\'t received a verification email yet, press the button below'),
-          TextButton(
-            child: const Text('send email verification'),
-            onPressed: () {
-              // await AuthService.firebase().sendEmailVerification();
-              context.read<AuthBloc>().add(
-                    const AuthEventSendEmailVerification(),
-                  );
-            },
-          ),
-          TextButton(
+        child: SingleChildScrollView(
+          child: Column(children: [
+            const Text(
+                'We\'ve sent you an email verification. Please open it to verify your account. '),
+            const Text(
+                'If you haven\'t received a verification email yet, press the button below'),
+            TextButton(
+              child: const Text('send email verification'),
               onPressed: () {
-                // await AuthService.firebase().logOut();
-                // navigator.pushNamedAndRemoveUntil(
-                //     registerRoutes, (route) => false);
-                context.read<AuthBloc>().add(const AuthEventLogOut());
+                // await AuthService.firebase().sendEmailVerification();
+                context.read<AuthBloc>().add(
+                      const AuthEventSendEmailVerification(),
+                    );
               },
-              child: const Text('Restart registration'))
-        ]),
+            ),
+            TextButton(
+                onPressed: () {
+                  // await AuthService.firebase().logOut();
+                  // navigator.pushNamedAndRemoveUntil(
+                  //     registerRoutes, (route) => false);
+                  context.read<AuthBloc>().add(const AuthEventLogOut());
+                },
+                child: const Text('Restart registration'))
+          ]),
+        ),
       ),
     );
   }

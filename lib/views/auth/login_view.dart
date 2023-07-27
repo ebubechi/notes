@@ -65,65 +65,67 @@ class _LoginViewState extends State<LoginView> {
         ),
         body: Padding(
           padding: const EdgeInsets.all(20.0),
-          child: Column(
-            children: [
-              const Text(
-                  'Please log in to your account in order to interact with and create notes!'),
-              TextField(
-                controller: _email,
-                decoration:
-                    const InputDecoration(hintText: 'Enter your email here'),
-                keyboardType: TextInputType.emailAddress,
-                enableSuggestions: false,
-                autocorrect: false,
-              ),
-              TextField(
-                controller: _password,
-                decoration:
-                    const InputDecoration(hintText: 'Enter your password here'),
-                obscureText: true,
-              ),
-              TextButton(
-                child: const Text('Login'),
-                onPressed: () async {
-                  final email = _email!.text;
-                  final password = _password!.text;
-                  context.read<AuthBloc>().add(AuthEventLogIn(
-                        email,
-                        password,
-                      ));
-                  // try {
-                  //   context
-                  //       .read<AuthBloc>()
-                  //       .add(AuthEventLogIn(email, password));
-                  //   // await AuthService.firebase().logIn(email: email, password: password);
-                  // } on UserNotFoundAuthException {
-                  //   await showErrorDialog(context, 'User not found');
-                  // } on WrongPasswordAuthException {
-                  //   await showErrorDialog(context, 'Wrong password');
-                  // } on GenericAuthException {
-                  //   await showErrorDialog(context, 'Authentication error');
-                  // }
-                },
-              ),
-              TextButton(
-                onPressed: () {
-                  context.read<AuthBloc>().add(
-                        const AuthEventForgotPassword(),
-                      );
-                },
-                child: const Text('I forgot my password'),
-              ),
-              TextButton(
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                const Text(
+                    'Please log in to your account in order to interact with and create notes!'),
+                TextField(
+                  controller: _email,
+                  decoration:
+                      const InputDecoration(hintText: 'Enter your email here'),
+                  keyboardType: TextInputType.emailAddress,
+                  enableSuggestions: false,
+                  autocorrect: false,
+                ),
+                TextField(
+                  controller: _password,
+                  decoration:
+                      const InputDecoration(hintText: 'Enter your password here'),
+                  obscureText: true,
+                ),
+                TextButton(
+                  child: const Text('Login'),
+                  onPressed: () async {
+                    final email = _email!.text;
+                    final password = _password!.text;
+                    context.read<AuthBloc>().add(AuthEventLogIn(
+                          email,
+                          password,
+                        ));
+                    // try {
+                    //   context
+                    //       .read<AuthBloc>()
+                    //       .add(AuthEventLogIn(email, password));
+                    //   // await AuthService.firebase().logIn(email: email, password: password);
+                    // } on UserNotFoundAuthException {
+                    //   await showErrorDialog(context, 'User not found');
+                    // } on WrongPasswordAuthException {
+                    //   await showErrorDialog(context, 'Wrong password');
+                    // } on GenericAuthException {
+                    //   await showErrorDialog(context, 'Authentication error');
+                    // }
+                  },
+                ),
+                TextButton(
                   onPressed: () {
                     context.read<AuthBloc>().add(
-                          const AuthEventShouldRegister(),
+                          const AuthEventForgotPassword(),
                         );
-                    // navigator.pushNamedAndRemoveUntil(
-                    //     registerRoutes, (route) => true);
                   },
-                  child: const Text('Not registered yet? Register here!'))
-            ],
+                  child: const Text('I forgot my password'),
+                ),
+                TextButton(
+                    onPressed: () {
+                      context.read<AuthBloc>().add(
+                            const AuthEventShouldRegister(),
+                          );
+                      // navigator.pushNamedAndRemoveUntil(
+                      //     registerRoutes, (route) => true);
+                    },
+                    child: const Text('Not registered yet? Register here!'))
+              ],
+            ),
           ),
         ),
       ),
