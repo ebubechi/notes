@@ -7,9 +7,11 @@ import 'package:notes/constants/routes.dart';
 import 'package:notes/services/auth/bloc/auth_bloc.dart';
 import 'package:notes/services/auth/bloc/auth_event.dart';
 import 'package:notes/services/auth/bloc/auth_state.dart';
-import 'package:notes/services/auth/firebase_auth_provider.dart'; 
+import 'package:notes/services/auth/firebase_auth_provider.dart';
 import 'package:notes/views/auth/register_view.dart';
 import 'package:notes/views/auth/forgot_password_view.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
 // import 'dart:developer' as devtools show log;
 
 // import 'services/auth/auth_user.dart';
@@ -42,6 +44,8 @@ void main() {
       // verifyEmailRoutes: (context) => const VerifyEmailView(),
       createOrUpdateNotesRoutes: (context) => const CreateOrUpdateNoteView(),
     },
+   supportedLocales: AppLocalizations.supportedLocales,
+   localizationsDelegates: AppLocalizations.localizationsDelegates,
   ));
 }
 

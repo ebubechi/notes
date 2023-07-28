@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notes/extensions/buildcontext/loc.dart';
 import 'package:notes/services/auth/auth_service.dart';
 // import 'package:notes/services/cloud-firestore/cloud_storage_constants.dart';
 import 'package:notes/utilities/dialogs/cannot_share_empty_note_dialog.dart';
@@ -105,7 +106,7 @@ class _CreateOrUpdateNoteViewState extends State<CreateOrUpdateNoteView> {
         child: AppBar(
           automaticallyImplyLeading: true,
           backgroundColor: Colors.amberAccent,
-          title: const Text('Your notes'),
+          title:  Text(context.loc.note),
           actions: [
             IconButton(
               onPressed: () async {
@@ -139,8 +140,8 @@ class _CreateOrUpdateNoteViewState extends State<CreateOrUpdateNoteView> {
                   controller: _textController,
                   keyboardType: TextInputType.multiline,
                   maxLines: null,
-                  decoration: const InputDecoration(
-                      hintText: 'Start typing your note...'),
+                  decoration: InputDecoration(
+                      hintText: context.loc.start_typing_your_note),
                 );
               default:
                 return const CircularProgressIndicator();

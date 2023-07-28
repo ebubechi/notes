@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes/extensions/buildcontext/loc.dart';
 // import 'package:notes/constants/routes.dart';
 // import 'package:notes/services/auth/auth_service.dart';
 import 'package:notes/services/auth/bloc/auth_bloc.dart';
@@ -21,19 +22,16 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
         preferredSize: const Size.fromHeight(150),
         child: AppBar(
           backgroundColor: Colors.amberAccent,
-          title: const Text('Verify Email'),
+          title:  Text(context.loc.verify_email),
         ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Column(children: [
-            const Text(
-                'We\'ve sent you an email verification. Please open it to verify your account. '),
-            const Text(
-                'If you haven\'t received a verification email yet, press the button below'),
+            Text(context.loc.verify_email_view_prompt),
             TextButton(
-              child: const Text('send email verification'),
+              child:  Text(context.loc.verify_email_send_email_verification),
               onPressed: () {
                 // await AuthService.firebase().sendEmailVerification();
                 context.read<AuthBloc>().add(
@@ -48,7 +46,7 @@ class _VerifyEmailViewState extends State<VerifyEmailView> {
                   //     registerRoutes, (route) => false);
                   context.read<AuthBloc>().add(const AuthEventLogOut());
                 },
-                child: const Text('Restart registration'))
+                child: Text(context.loc.restart))
           ]),
         ),
       ),

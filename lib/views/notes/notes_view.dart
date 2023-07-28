@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:notes/extensions/buildcontext/loc.dart';
 import 'package:notes/services/auth/auth_service.dart';
 import 'package:notes/services/auth/bloc/auth_bloc.dart';
 import 'package:notes/services/auth/bloc/auth_event.dart';
@@ -14,6 +15,10 @@ import 'dart:developer' as devtools show log;
 
 import '../../services/cloud-firestore/cloud_note.dart';
 import '../../utilities/dialogs/show_logout_dialog.dart';
+
+extension Count<T extends Iterable> on Stream<T> {
+  Stream<int> get getLength => map((event) => event.length);
+}
 
 class NotesView extends StatefulWidget {
   const NotesView({super.key});
@@ -49,7 +54,17 @@ class _NotesViewState extends State<NotesView> {
           child: AppBar(
             automaticallyImplyLeading: false,
             backgroundColor: Colors.amberAccent,
-            title: const Text('Your notes'),
+            title: StreamBuilder<int>(
+                stream: _notesService.allNotes(ownerUserId: userId).getLength,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final noteCount = snapshot.data ?? 0;
+                    final text = context.loc.notes_title(noteCount);
+                  return Text(text);
+                  } else {
+                    return const Text('');
+                  }
+                }),
             actions: [
               IconButton(
                   onPressed: () {
@@ -61,10 +76,10 @@ class _NotesViewState extends State<NotesView> {
                   icon: const Icon(Icons.add)),
               PopupMenuButton<MenuAction>(
                 itemBuilder: (BuildContext context) {
-                  return const [
+                  return [
                     PopupMenuItem<MenuAction>(
                       value: MenuAction.logout,
-                      child: Text('Log out'),
+                      child: Text(context.loc.logout_button),
                     )
                   ];
                 },
