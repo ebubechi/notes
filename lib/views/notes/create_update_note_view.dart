@@ -106,7 +106,7 @@ class _CreateOrUpdateNoteViewState extends State<CreateOrUpdateNoteView> {
         child: AppBar(
           automaticallyImplyLeading: true,
           backgroundColor: Colors.amberAccent,
-          title:  Text(context.loc.note),
+          title: Text(context.loc.note),
           actions: [
             IconButton(
               onPressed: () async {
@@ -114,7 +114,7 @@ class _CreateOrUpdateNoteViewState extends State<CreateOrUpdateNoteView> {
                 if (_note == null || text.isEmpty) {
                   await showCannotShareEmptyNoteDialog(context);
                 } else {
-                  Share.share(text); 
+                  Share.share(text);
                 }
               },
               icon: const Icon(
@@ -139,9 +139,15 @@ class _CreateOrUpdateNoteViewState extends State<CreateOrUpdateNoteView> {
                 return TextField(
                   controller: _textController,
                   keyboardType: TextInputType.multiline,
-                  maxLines: null,
+                  maxLines: 10,
                   decoration: InputDecoration(
-                      hintText: context.loc.start_typing_your_note),
+                    hintText: context.loc.start_typing_your_note,
+                    filled: true,
+                    fillColor: const Color(0x59D9D9D9),
+                    border: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(14)),
+                  ),
                 );
               default:
                 return const CircularProgressIndicator();
